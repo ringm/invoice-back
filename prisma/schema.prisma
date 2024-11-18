@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int           @id @default(autoincrement())
+  email     String        @unique
+  name      String
+  password  String
+  clients   Client[]      
+  invoices  Invoice[]     
+  addresses UserAddress[]
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  title         String
+  published     Boolean       @default(false)
+  userId        Int           @default(-1)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAddressId Int           @default(-1)
+  billFrom      UserAddress   @relation(fields: [userAddressId], references: [id])
+  clientId      Int           @default(-1)
+  billTo        Client        @relation(fields: [clientId], references: [id])
+  invoiceDate   DateTime
+  paymentDue    DateTime
+  invoiceItems  InvoiceItem[]
+  paid          Boolean
+}
+
+model Client {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  email         String
+  streetAddress String
+  city          String
+  postCode      String
+  country       String
+  invoices      Invoice[]
+}
+
+model UserAddress {
+  id            Int       @id @default(autoincrement())
+  streetAddress String
+  postalCode    String
+  city          String
+  country       String
+  userId        Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices      Invoice[]
+}
+
+model InvoiceItem {
+  id        Int     @id @default(autoincrement())
+  invoiceId String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  name      String
+  qty       Int
+  price     Float
+}
