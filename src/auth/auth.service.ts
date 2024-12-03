@@ -4,6 +4,7 @@ import {
   Dependencies,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -29,10 +30,10 @@ export class AuthService {
         const { password, ...rest } = user.data;
         return rest;
       } else {
-        throw new BadRequestException("Couldn't validate user.");
+        throw new UnauthorizedException('Invalid credentials.');
       }
     } catch (error) {
-      if (error instanceof NotFoundException || BadRequestException) {
+      if (error instanceof NotFoundException || UnauthorizedException) {
         throw error;
       }
       throw new InternalServerErrorException("Couldn't validate user.");

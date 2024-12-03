@@ -30,7 +30,7 @@ export class AuthController {
   async login(req: { user: any }, @Res() res: Response) {
     const token = await this.authService.login(req.user);
     res.setHeader('Authorization', `Bearer ${token}`);
-    return res.send({ message: 'Login successful' });
+    return res.status(200).send({ message: 'Login successful' });
   }
 
   @Public()
