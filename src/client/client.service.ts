@@ -31,8 +31,32 @@ export class ClientService {
     }
   }
 
-  findAll() {
-    return `This action returns all client`;
+  async findAll(): Promise<ResponseDto<Client[]>> {
+    try {
+      const clients = await this.prisma.client.findMany();
+
+      return {
+        message: 'Clients retrieved successfully.',
+        data: clients,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException("Couldn't retrieve invoices.");
+    }
+  }
+
+  async findAllByUser(id: number): Promise<ResponseDto<Client[]>> {
+    try {
+      const clients = await this.prisma.client.findMany({
+        where: { userId: id },
+      });
+
+      return {
+        message: 'User Clients retrieved successfully.',
+        data: clients,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException("Couldn't retrieve invoices.");
+    }
   }
 
   async findOne(id: number): Promise<ResponseDto<Client>> {

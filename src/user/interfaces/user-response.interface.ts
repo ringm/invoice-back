@@ -1,7 +1,7 @@
-import { User, UserAddress, Client, Invoice } from '@prisma/client';
+import { User } from '@prisma/client';
 
 export interface UserInterface extends User {
-  addresses: UserAddress[];
-  clients: Client[];
-  invoices: Invoice[];
+  // addresses: UserAddress[];
+  // clients: Client[];
+  // invoices: Invoice[];
 }

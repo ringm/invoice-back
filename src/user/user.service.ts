@@ -43,11 +43,6 @@ export class UserService {
         where: {
           id: id,
         },
-        include: {
-          addresses: true,
-          clients: true,
-          invoices: true,
-        },
       });
 
       if (!user) {

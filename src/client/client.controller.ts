@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Bind,
+  Req,
   Patch,
   Body,
   Param,
@@ -19,6 +21,12 @@ export class ClientController {
   @Post()
   create(@Body() createClientDto: CreateClientDto) {
     return this.clientService.create(createClientDto);
+  }
+
+  @Get()
+  @Bind(Req())
+  async findAll() {
+    return this.clientService.findAll();
   }
 
   @Get(':id')

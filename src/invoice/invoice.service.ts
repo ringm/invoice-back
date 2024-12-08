@@ -86,12 +86,45 @@ export class InvoiceService {
     }
   }
 
-  async getAll(): Promise<ResponseDto<Invoice[]>> {
+  async findAll(): Promise<ResponseDto<Invoice[]>> {
     try {
-      const invoices = await this.prisma.invoice.findMany();
+      const invoices = await this.prisma.invoice.findMany({
+        include: { billTo: { select: { name: true } }, invoiceItems: true },
+      });
+
+      const invoicesWithTotal = invoices?.map((invoice) => ({
+        ...invoice,
+        total: invoice?.invoiceItems?.reduce(
+          (sum, item) => sum + item.price * item.qty,
+          0,
+        ),
+      }));
 
       return {
         message: 'Invoices retrieved successfully.',
+        data: invoicesWithTotal,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException("Couldn't retrieve invoices.");
+    }
+  }
+
+  async findAllByUser(id: number): Promise<ResponseDto<Invoice[]>> {
+    try {
+      const invoices = await this.prisma.invoice.findMany({
+        where: { userId: id },
+      });
+
+      // const invoicesWithTotal = invoices?.map((invoice) => ({
+      //   ...invoice,
+      //   total: invoice?.invoiceItems?.reduce(
+      //     (sum, item) => sum + item.price * item.qty,
+      //     0,
+      //   ),
+      // }));
+
+      return {
+        message: 'User invoices retrieved successfully?',
         data: invoices,
       };
     } catch (error) {

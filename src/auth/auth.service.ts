@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   Dependencies,
   InternalServerErrorException,
@@ -41,14 +40,13 @@ export class AuthService {
   }
 
   async login(user: Pick<User, 'id' | 'email' | 'name'>) {
-    const payload = { username: user.email, sub: user.id };
+    const payload = { id: user.id, name: user.name, email: user.email };
     const token = await this.jwtService.signAsync(payload);
     return token;
   }
 
   async signUp(userData: SignUpDto): Promise<ResponseDto<User>> {
     try {
-      console.log('user data', userData);
       const user = await this.userService.create(userData);
       return {
         message: 'User created successfully.',

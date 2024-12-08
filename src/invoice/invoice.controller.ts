@@ -25,7 +25,7 @@ export class InvoiceController {
   @Get()
   @Bind(Req())
   async findAll() {
-    return this.invoiceService.getAll();
+    return this.invoiceService.findAll();
   }
 
   @Get(':id')
